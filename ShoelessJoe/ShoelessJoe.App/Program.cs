@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using ShoelessJoe.DataAccess.DataModels;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ShoelessJoeContext>(options => options.UseMySql(SecretConfig.ConnectionString, new MySqlServerVersion(SecretConfig.Version)));
 
 var app = builder.Build();
 
