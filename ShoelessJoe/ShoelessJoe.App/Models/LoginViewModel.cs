@@ -1,4 +1,4 @@
-﻿using ShoelessJoe.App.Attributes;
+﻿using ShoelessJoe.App.Attributes.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShoelessJoe.App.Models

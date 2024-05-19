@@ -56,15 +56,11 @@ namespace ShoelessJoe.DataAccess.Services
         {
             return new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _jwtAppSettings.JWTSubject),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),
                 new Claim(_userAppSettings.UserId, coreUser.UserId.ToString()),
                 new Claim(_userAppSettings.Email, coreUser.Email),
                 new Claim(_userAppSettings.PhoneNumb, coreUser.PhoneNumb),
                 new Claim(_userAppSettings.FirstName, coreUser.FirstName),
-                new Claim(_userAppSettings.LastName, coreUser.LastName),
-                new Claim(_userAppSettings.IsAdmin, coreUser.IsAdmin.ToString())
+                new Claim(_userAppSettings.LastName, coreUser.LastName)
             };
         }
 
