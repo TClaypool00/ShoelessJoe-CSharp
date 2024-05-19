@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using ShoelessJoe.Core.Interfaces;
 using ShoelessJoe.DataAccess.DataModels;
+using ShoelessJoe.DataAccess.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ShoelessJoeContext>(options => options.UseMySql(SecretConfig.ConnectionString, new MySqlServerVersion(SecretConfig.Version)));
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
