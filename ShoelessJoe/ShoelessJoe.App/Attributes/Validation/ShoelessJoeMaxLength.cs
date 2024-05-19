@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShoelessJoe.App.Attributes
+namespace ShoelessJoe.App.Attributes.Validation
 {
     public class ShoelessJoeMaxLength : MaxLengthAttribute
     {
