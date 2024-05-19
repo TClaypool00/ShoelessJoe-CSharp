@@ -31,6 +31,8 @@
         </nav>
     </header>
     <div class="container">
+        <p class="text-danger">@ViewBag.Error</p>
+        <p class="text-success">@ViewBag.Success</p>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
