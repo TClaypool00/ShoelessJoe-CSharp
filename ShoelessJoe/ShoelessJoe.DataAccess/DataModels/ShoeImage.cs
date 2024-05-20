@@ -22,8 +22,6 @@ namespace ShoelessJoe.DataAccess.DataModels
         [Required]
         [MaxLength(255)]
         public string LeftShoeImage2 { get; set;  }
-
-        public int ShoeId { get; set; }
         public Shoe Shoe { get; set; }
     }
 }
