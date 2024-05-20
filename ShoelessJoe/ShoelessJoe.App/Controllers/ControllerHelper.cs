@@ -4,6 +4,14 @@ namespace ShoelessJoe.App.Controllers
 {
     public abstract class ControllerHelper : Controller
     {
+        public int UserId
+        {
+            get
+            {
+                return int.Parse(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+            }
+        }
+
         protected void SetSuccessMessage(string message)
         {
             ViewBag.Success = message;
