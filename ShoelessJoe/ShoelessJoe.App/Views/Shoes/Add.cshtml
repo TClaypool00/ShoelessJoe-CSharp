@@ -1,0 +1,55 @@
+﻿@model ShoelessJoe.App.Models.PostModels.PostShoeViewModel
+@{
+    ViewData["Title"] = "Donate Shoes";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <form method="post">
+                <div class="form-floating mb-3">
+                    <input asp-for="RightSize" class="form-control" placeholder="@Html.DisplayNameFor(a => a.RightSize)" />
+                    <label asp-for="RightSize">@Html.DisplayNameFor(a => a.RightSize)</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="LeftSize" class="form-control" placeholder="@Html.DisplayNameFor(a => a.LeftSize)" />
+                    <label asp-for="LeftSize">@Html.DisplayNameFor(a => a.LeftSize)</label>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ManufacterId">@Html.DisplayNameFor(a => a.ManufacterId)</label>
+                    <select class="form-select" asp-for="ManufacterId" asp-items="@Model.ManufacterDropDown"></select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ModelId">@Html.DisplayNameFor(a => a.ModelId)</label>
+                    <select class="form-select" asp-for="ModelId" asp-items="@Model.ModelDropDown"></select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="RightShoeFile1" class="form-label">@Html.DisplayNameFor(a => a.RightShoeFile1)</label>
+                    <input class="form-control" asp-for="RightShoeFile1">
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="RightShoeFile2" class="form-label">@Html.DisplayNameFor(a => a.RightShoeFile2)</label>
+                    <input class="form-control" asp-for="RightShoeFile2">
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LeftShoeFile1" class="form-label">@Html.DisplayNameFor(a => a.LeftShoeFile1)</label>
+                    <input class="form-control" asp-for="LeftShoeFile1">
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LeftShoeFile2" class="form-label">@Html.DisplayNameFor(a => a.LeftShoeFile2)</label>
+                    <input class="form-control" asp-for="LeftShoeFile2">
+                </div>
+
+                <button class="btn btn-primary" type="submit">@ViewData["Title"]</button>
+            </form>
+        </div>
+    </div>
+</div>
