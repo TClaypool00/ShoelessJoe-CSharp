@@ -6,6 +6,8 @@ namespace ShoelessJoe.App.Models.PostModels
 {
     public class PostShoeViewModel
     {
+        public int ShoeId { get; set; }
+
         [Display(Name = "Right Shoe Size")]
         public double? RightSize { get; set; }
         [Display(Name = "Left Shoe Size")]
