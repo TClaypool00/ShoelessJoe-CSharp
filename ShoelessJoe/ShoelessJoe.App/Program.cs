@@ -15,6 +15,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ShoelessJoeContext>(options => options.UseMySql(SecretConfig.ConnectionString, new MySqlServerVersion(SecretConfig.Version)));
 
+builder.Services.AddScoped<IManufacterService, ManufacterService>();
+builder.Services.AddScoped<IModelService, ModelService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IJWTService, JWTTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();

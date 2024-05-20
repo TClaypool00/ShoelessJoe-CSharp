@@ -139,16 +139,10 @@ namespace ShoelessJoe.DataAccess.Services
             index ??= 1;
             int skipNumber = (index > 1) ? (int)index : 0;
 
-            var coreManufacters = new List<SelectListItem>();
-
-            var defaultValue = new SelectListItem
+            var dropDowns = new List<SelectListItem>
             {
-                Value = string.Empty,
-                Text = $"{_globalSettings.DefaultSelectText} {_manufacturerAppSettings.TableName}",
-                Selected = true
+                AddDefaultValue()
             };
-
-            coreManufacters.Add(defaultValue);
 
             var manufacters = await _context.Manufacters.Select(m => new Manufacter
             {
@@ -165,11 +159,11 @@ namespace ShoelessJoe.DataAccess.Services
             {
                 for (int i = 0; i < manufacters.Count; i++)
                 {
-                    coreManufacters.Add(Mapper.MapManufacterDropDown(manufacters[i]));
+                    dropDowns.Add(Mapper.MapDropDown(manufacters[i]));
                 }
             }
 
-            return coreManufacters;
+            return dropDowns;
         }
 
         public Task<bool> ManufacterExistsByUserId(int id, int userId)

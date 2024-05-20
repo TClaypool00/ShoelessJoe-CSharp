@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using ShoelessJoe.DataAccess.AppSettings;
 using ShoelessJoe.DataAccess.DataModels;
 
@@ -42,6 +43,16 @@ namespace ShoelessJoe.DataAccess.Services
         protected async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        protected SelectListItem AddDefaultValue()
+        {
+            return new SelectListItem
+            {
+                Value = "",
+                Text = "Please select a value",
+                Selected = true
+            };
         }
         #endregion
     }

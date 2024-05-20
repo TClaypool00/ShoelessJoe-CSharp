@@ -71,7 +71,7 @@ namespace ShoelessJoe.DataAccess
             return coreManufacter;
         }
 
-        public static SelectListItem MapManufacterDropDown(Manufacter manufacter)
+        public static SelectListItem MapDropDown(Manufacter manufacter)
         {
             return new SelectListItem
             {
@@ -148,12 +148,13 @@ namespace ShoelessJoe.DataAccess
             return coreModel;
         }
 
-        public static CoreModelDropDown MapModelDropDown(Model model)
+        public static SelectListItem MapDropDown(Model model)
         {
-            return new CoreModelDropDown
+            return new SelectListItem
             {
-                ModelId = model.ModelId,
-                ModelName = model.ModelName
+                Value = model.ModelId.ToString(),
+                Text = model.ModelName,
+                Selected = false
             };
         }
 

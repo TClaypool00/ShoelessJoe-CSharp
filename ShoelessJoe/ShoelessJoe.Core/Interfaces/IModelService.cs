@@ -1,5 +1,5 @@
-﻿using ShoelessJoe.Core.CoreModels;
-using ShoelessJoe.Core.CoreModels.PartialModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using ShoelessJoe.Core.CoreModels;
 
 namespace ShoelessJoe.Core.Interfaces
 {
@@ -12,7 +12,7 @@ namespace ShoelessJoe.Core.Interfaces
         #region Public Methods
         public Task<List<CoreModel>> GetModelsAsync(int? userId = null, int? index = null);
 
-        public Task<List<CoreModelDropDown>> GetModelDropDown(int userId, int? index = null);
+        public Task<List<SelectListItem>> GetModelDropDown(int userId, int? index = null);
 
         public Task<CoreModel> GetModelAsync(int id);
 

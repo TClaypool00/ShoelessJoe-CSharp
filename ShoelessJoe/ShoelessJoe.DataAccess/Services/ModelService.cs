@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ShoelessJoe.Core.CoreModels;
-using ShoelessJoe.Core.CoreModels.PartialModels;
 using ShoelessJoe.Core.Interfaces;
 using ShoelessJoe.DataAccess.AppSettings;
 using ShoelessJoe.DataAccess.DataModels;
@@ -72,31 +72,37 @@ namespace ShoelessJoe.DataAccess.Services
             return Mapper.MapModel(dataModel);
         }
 
-        public async Task<List<CoreModelDropDown>> GetModelDropDown(int userId, int? index = null)
+        public async Task<List<SelectListItem>> GetModelDropDown(int userId, int? index = null)
         {
             ConfigureIndex(index);
-            var coreModels = new List<CoreModelDropDown>();
+            var dropDowns = new List<SelectListItem>();
 
             var models = await _context.Models
+                .Where(u => u.Manufacter.UserId == userId)
                 .Select(m => new Model
                 {
                     ModelId = m.ModelId,
-                    ModelName = m.ModelName
+                    ModelName = m.ModelName,
+                    Manufacter = new Manufacter
+                    {
+                        UserId = m.Manufacter.UserId
+                    }
                 })
-                .Where(u => u.Manufacter.UserId == userId)
                 .Take(10)
                 .Skip(_index)
                 .ToListAsync();
+
+            dropDowns.Add(AddDefaultValue());
 
             if (models.Count > 0)
             {
                 for (int i = 0; i < models.Count; i++)
                 {
-                    coreModels.Add(Mapper.MapModelDropDown(models[i]));
+                    dropDowns.Add(Mapper.MapDropDown(models[i]));
                 }
             }
 
-            return coreModels;
+            return dropDowns;
         }
 
         public async Task<List<CoreModel>> GetModelsAsync(int? userId = null, int? index = null)
