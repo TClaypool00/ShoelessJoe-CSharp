@@ -9,19 +9,14 @@ namespace ShoelessJoe.DataAccess.DataModels
 
         [Required]
         [MaxLength(255)]
-        public string RightShoeImage1 { get; set; }
+        public string FileName { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string RightShoeImage2 { get; set; }
+        public byte[] ShoeArray { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string LeftShoeImage1 { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string LeftShoeImage2 { get; set;  }
+        public int ShoeId { get; set; }
         public Shoe Shoe { get; set; }
+
     }
 }

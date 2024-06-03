@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoelessJoe.DataAccess.DataModels;
 
@@ -10,9 +11,10 @@ using ShoelessJoe.DataAccess.DataModels;
 namespace ShoelessJoe.DataAccess.Migrations
 {
     [DbContext(typeof(ShoelessJoeContext))]
-    partial class ShoelessJoeContextModelSnapshot : ModelSnapshot
+    [Migration("20240520030025_MadeShoeToShoeImageOneToMany")]
+    partial class MadeShoeToShoeImageOneToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,7 +160,6 @@ namespace ShoelessJoe.DataAccess.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<byte[]>("ShoeArray")
-                        .IsRequired()
                         .HasColumnType("longblob");
 
                     b.Property<int>("ShoeId")

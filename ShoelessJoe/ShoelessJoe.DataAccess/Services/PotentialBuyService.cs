@@ -276,14 +276,6 @@ namespace ShoelessJoe.DataAccess.Services
                                     LastName = s.Shoe.Model.Manufacter.User.LastName
                                 }
                             }
-                        },
-                        ShoeImage = new ShoeImage
-                        {
-                            ShoeImageId = s.Shoe.ShoeImage.ShoeImageId,
-                            LeftShoeImage1 = s.Shoe.ShoeImage.LeftShoeImage1 ?? "",
-                            LeftShoeImage2 = s.Shoe.ShoeImage.LeftShoeImage2 ?? "",
-                            RightShoeImage1 = s.Shoe.ShoeImage.RightShoeImage1 ?? "",
-                            RightShoeImage2 = s.Shoe.ShoeImage.RightShoeImage2 ?? ""
                         }
                     }
 

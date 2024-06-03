@@ -1,12 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ShoelessJoe.Core.CoreModels;
-using ShoelessJoe.Core.CoreModels.PartialModels;
 using ShoelessJoe.DataAccess.DataModels;
 
 namespace ShoelessJoe.DataAccess
 {
     public class Mapper
     {
+        public static ShoeImage MapShoeImage(CoreShoeImage shoeImage, int shoeId)
+        {
+            return new ShoeImage
+            {
+                FileName = shoeImage.FileName,
+                ShoeArray = shoeImage.ShoeArray,
+                ShoeId = shoeId,
+                ShoeImageId = shoeImage.ShoeId
+            };
+        }
+
         public static User MapUser(CoreUser user)
         {
             return new User
@@ -86,7 +96,7 @@ namespace ShoelessJoe.DataAccess
             var dataModel = new Model
             {
                 ModelName = model.ModelName,
-                ManufacterId = model.ManufacterId
+                ManufacterId = model.Manufacter.ManufacterId
             };
 
             if (dataModel.ModelId != 0)
@@ -165,7 +175,7 @@ namespace ShoelessJoe.DataAccess
                 LeftSize = shoe.LeftSize,
                 RightSize = shoe.RightSize,
                 DatePosted = shoe.DatePosted,
-                ModelId = shoe.ModelId
+                ModelId = shoe.Model.ModelId,
             };
 
             if (shoe.ShoeId != 0)
@@ -189,11 +199,6 @@ namespace ShoelessJoe.DataAccess
             if (shoe.Model is not null)
             {
                 coreShoe.Model = MapModel(shoe.Model);
-            }
-
-            if (shoe.ShoeImage is not null)
-            {
-                coreShoe.ShoeImage = MapShoeImage(shoe.ShoeImage);
             }
 
             return coreShoe;
@@ -269,10 +274,10 @@ namespace ShoelessJoe.DataAccess
             return new CoreShoeImage
             {
                 ShoeImageId = shoeImage.ShoeImageId,
-                LeftShoeImage1Path = shoeImage.LeftShoeImage1,
-                LeftShoeImage2Path = shoeImage.LeftShoeImage2,
-                RightShoeImage1Path = shoeImage.RightShoeImage1,
-                RightShoeImage2Path= shoeImage.RightShoeImage2
+                //LeftShoeImage1Path = shoeImage.LeftShoeImage1,
+                //LeftShoeImage2Path = shoeImage.LeftShoeImage2,
+                //RightShoeImage1Path = shoeImage.RightShoeImage1,
+                //RightShoeImage2Path= shoeImage.RightShoeImage2
             };
         }
 
@@ -280,10 +285,10 @@ namespace ShoelessJoe.DataAccess
         {
             var dataShoeImage = new ShoeImage
             {
-                LeftShoeImage1 = shoeImage.LeftShoeImage1Path,
-                LeftShoeImage2 = shoeImage.LeftShoeImage2Path,
-                RightShoeImage1 = shoeImage.RightShoeImage1Path,
-                RightShoeImage2 = shoeImage.RightShoeImage2Path
+                //LeftShoeImage1 = shoeImage.LeftShoeImage1Path,
+                //LeftShoeImage2 = shoeImage.LeftShoeImage2Path,
+                //RightShoeImage1 = shoeImage.RightShoeImage1Path,
+                //RightShoeImage2 = shoeImage.RightShoeImage2Path
             };
 
             if (shoeImage.ShoeImageId != 0)

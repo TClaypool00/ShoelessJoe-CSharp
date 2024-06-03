@@ -24,7 +24,7 @@ namespace ShoelessJoe.Core.Interfaces
 
         public Task<CoreShoe> GetShoesAsync(int id);
 
-        public Task AddShoeAsync(CoreShoe shoe);
+        public Task<CoreShoe> AddShoeAsync(CoreShoe shoe);
 
         public Task<CoreShoe> UpdateShoeAsync(CoreShoe shoe, int id);
 

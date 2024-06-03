@@ -5,6 +5,7 @@ using ShoelessJoe.Core.CoreModels;
 using ShoelessJoe.Core.Interfaces;
 using ShoelessJoe.DataAccess.AppSettings;
 using ShoelessJoe.DataAccess.DataModels;
+using System.Linq.Expressions;
 
 namespace ShoelessJoe.DataAccess.Services
 {
@@ -47,7 +48,7 @@ namespace ShoelessJoe.DataAccess.Services
         #endregion
 
         #region Public Methods
-        public async Task AddShoeAsync(CoreShoe shoe)
+        public async Task<CoreShoe> AddShoeAsync(CoreShoe shoe)
         {
             var dataShoe = Mapper.MapShoe(shoe);
 
@@ -55,91 +56,32 @@ namespace ShoelessJoe.DataAccess.Services
 
             await SaveAsync();
 
-            if (dataShoe.ShoeId == 0)
+            shoe.ShoeId = dataShoe.ShoeId;
+
+            if (shoe.ShoeImages is not null && shoe.ShoeImages.Count > 0)
             {
-                throw new ArgumentException(_idErrorMessage);
-            }
+                dataShoe.ShoeImages = new List<ShoeImage>();
 
-            _filePath = SecretConfig.PicturePath + $"User{shoe.Model.Manufacter.UserId}";
-
-            CreateDirectory();
-
-            _filePath += $"\\Shoe{dataShoe.ShoeId}";
-
-            CreateDirectory();
-
-            _filePath += "\\";
-
-
-            try
-            {
-                if (shoe.ShoeImage.LeftShoeImage1 is not null)
+                try
                 {
-                    _picturePath = GenerateFileName(shoe.ShoeImage.LeftShoeImage1, ShoePicturesTypes.LeftShoe1);
-                    using (_stream = new FileStream(CombineFileName(), FileMode.Create))
+                    for (int i = 0; i < shoe.ShoeImages.Count; i++)
                     {
-                        await shoe.ShoeImage.LeftShoeImage1.CopyToAsync(_stream);
+                        dataShoe.ShoeImages.Add(Mapper.MapShoeImage(shoe.ShoeImages[i], shoe.ShoeId));
                     }
 
-                    shoe.ShoeImage.LeftShoeImage1Path = _picturePath;
+                    await _context.ShoeImages.AddRangeAsync(dataShoe.ShoeImages);
+                    await SaveAsync();
                 }
-
-                if (shoe.ShoeImage.LeftShoeImage2 is not null)
+                catch (Exception)
                 {
-                    _picturePath = GenerateFileName(shoe.ShoeImage.LeftShoeImage2, ShoePicturesTypes.LeftShoe2);
-                    using (_stream = new FileStream(CombineFileName(), FileMode.Create))
-                    {
-                        await shoe.ShoeImage.LeftShoeImage2.CopyToAsync(_stream);
-                    }
+                    _context.Shoes.Remove(dataShoe);
+                    await SaveAsync();
 
-                    shoe.ShoeImage.LeftShoeImage2Path = _picturePath;
+                    throw;
                 }
-
-                if (shoe.ShoeImage.RightShoeImage1 is not null)
-                {
-                    _picturePath = GenerateFileName(shoe.ShoeImage.RightShoeImage1, ShoePicturesTypes.RightShoe1);
-                    using (_stream = new FileStream(CombineFileName(), FileMode.Create))
-                    {
-                        await shoe.ShoeImage.RightShoeImage1.CopyToAsync(_stream);
-                    }
-
-                    shoe.ShoeImage.RightShoeImage1Path = _picturePath;
-                }
-
-                if (shoe.ShoeImage.RightShoeImage2 is not null)
-                {
-                    _picturePath = GenerateFileName(shoe.ShoeImage.RightShoeImage2, ShoePicturesTypes.RightShoe2);
-                    using (_stream = new FileStream(CombineFileName(), FileMode.Create))
-                    {
-                        await shoe.ShoeImage.RightShoeImage2.CopyToAsync(_stream);
-                    }
-
-                    shoe.ShoeImage.RightShoeImage2Path = _picturePath;
-                }
-
-            }
-            catch (Exception)
-            {
-                _context.Shoes.Remove(dataShoe);
-                await SaveAsync();
-                throw;
             }
 
-            var dataShoeImage = Mapper.MapShoeImage(shoe.ShoeImage);
-            dataShoeImage.Shoe = dataShoe;
-
-            await _context.ShoeImages.AddAsync(dataShoeImage);
-
-            try
-            {
-                await SaveAsync();
-            }
-            catch (Exception)
-            {
-                _context.Shoes.Remove(dataShoe);
-                await SaveAsync();
-                throw;
-            }
+            return shoe;
         }
 
         public async Task<List<CoreShoe>> GetShoesAsync(int? ownerId = null, int? soldToId = null, DateTime? datePosted = null, bool? isSold = null, int? index = null)
@@ -169,13 +111,6 @@ namespace ShoelessJoe.DataAccess.Services
                                 LastName = s.Model.Manufacter.User.LastName
                             }
                         }
-                    },
-                    ShoeImage = new ShoeImage
-                    {
-                        LeftShoeImage1 = s.ShoeImage.LeftShoeImage1,
-                        LeftShoeImage2 = s.ShoeImage.LeftShoeImage2,
-                        RightShoeImage1 = s.ShoeImage.RightShoeImage1,
-                        RightShoeImage2 = s.ShoeImage.RightShoeImage2
                     }
                 })
                 .Take(15)
@@ -186,7 +121,8 @@ namespace ShoelessJoe.DataAccess.Services
             {
                 if (ownerId is not null)
                 {
-                    shoes = await FindDataShoe()
+                    shoes = await _context.Shoes
+                    .Select(FindDataShoe())
                     .Take(10)
                     .Skip(_index)
                     .Where(a => a.Model.Manufacter.User.UserId == ownerId)
@@ -217,7 +153,9 @@ namespace ShoelessJoe.DataAccess.Services
 
         public async Task<CoreShoe> GetShoesAsync(int id)
         {
-            var dataShoe = await FindDataShoe().FirstOrDefaultAsync(s => s.ShoeId == id);
+            var dataShoe = await _context.Shoes
+                .Select(FindDataShoe())
+                .FirstOrDefaultAsync(s => s.ShoeId == id);
 
             return Mapper.MapShoe(dataShoe);
         }
@@ -250,50 +188,36 @@ namespace ShoelessJoe.DataAccess.Services
         #endregion
 
         #region Private Methods
-        private IQueryable<Shoe> FindDataShoe()
+        private static Expression<Func<Shoe, Shoe>> FindDataShoe()
         {
-            return _context.Shoes
-                .Select(a => new Shoe
+            return a => new Shoe
+            {
+                ShoeId = a.ShoeId,
+                LeftSize = a.LeftSize,
+                RightSize = a.RightSize,
+                DatePosted = a.DatePosted,
+                Model = new Model
                 {
-                    ShoeId = a.ShoeId,
-                    LeftSize = a.LeftSize,
-                    RightSize = a.RightSize,
-                    DatePosted = a.DatePosted,
-                    Model = new Model
+                    ModelId = a.ModelId,
+                    ModelName = a.Model.ModelName,
+                    Manufacter = new Manufacter
                     {
-                        ModelId = a.ModelId,
-                        ModelName = a.Model.ModelName,
-                        Manufacter = new Manufacter
+                        ManufacterId = a.Model.ManufacterId,
+                        ManufacterName = a.Model.Manufacter.ManufacterName,
+                        User = new User
                         {
-                            ManufacterId = a.Model.ManufacterId,
-                            ManufacterName = a.Model.Manufacter.ManufacterName,
-                            User = new User
-                            {
-                                UserId = a.Model.Manufacter.UserId,
-                                FirstName = a.Model.Manufacter.User.FirstName,
-                                LastName = a.Model.Manufacter.User.LastName
-                            }
+                            UserId = a.Model.Manufacter.UserId,
+                            FirstName = a.Model.Manufacter.User.FirstName,
+                            LastName = a.Model.Manufacter.User.LastName
                         }
                     }
-                });
-        }
-
-        private void CreateDirectory()
-        {
-            if (!Directory.Exists(_filePath))
-            {
-                Directory.CreateDirectory(_filePath);
-            }
+                }
+            };
         }
 
         private static string GenerateFileName(IFormFile file, ShoePicturesTypes type)
         {
             return Path.GetFileNameWithoutExtension(file.FileName) + "-" + Guid.NewGuid().ToString() + "-" + type.ToString() + Path.GetExtension(file.FileName);
-        }
-
-        private string CombineFileName()
-        {
-            return _filePath + _picturePath;
         }
         #endregion
 
