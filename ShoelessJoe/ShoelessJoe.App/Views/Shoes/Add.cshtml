@@ -8,7 +8,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-5">
-            <form method="post">
+            <form method="post" asp-action="Add" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="form-floating mb-3">
                     <input asp-for="RightSize" class="form-control" placeholder="@Html.DisplayNameFor(a => a.RightSize)" />
                     <label asp-for="RightSize">@Html.DisplayNameFor(a => a.RightSize)</label>
@@ -18,14 +19,40 @@
                     <label asp-for="LeftSize">@Html.DisplayNameFor(a => a.LeftSize)</label>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="ManufacterId">@Html.DisplayNameFor(a => a.ManufacterId)</label>
-                    <select class="form-select" asp-for="ManufacterId" asp-items="@Model.ManufacterDropDown"></select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="ManufacterId">@Html.DisplayNameFor(a => a.ManufacterId)</label>
+                            <select class="form-select" asp-for="ManufacterId" asp-items="@Model.ManufacterDropDown"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <input id="txtManufacterName" class="form-control" type="text" />
+                        </div>
+                        <div class="col-md-6">
+                            <button id="btnAddManufacter" type="button" class="btn btn-primary">Add Manufacter</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="ModelId">@Html.DisplayNameFor(a => a.ModelId)</label>
-                    <select class="form-select" asp-for="ModelId" asp-items="@Model.ModelDropDown"></select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="ModelId">@Html.DisplayNameFor(a => a.ModelId)</label>
+                            <select class="form-select" asp-for="ModelId" asp-items="@Model.ModelDropDown"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <input id="txtModelName" class="form-control" type="text" />
+                        </div>
+                        <div class="col-md-6">
+                            <button id="btnAddModel" type="button" class="btn btn-primary">Add Model</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -53,3 +80,101 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        const RightSize = document.getElementById('RightSize');
+        const LeftSize = document.getElementById('LeftSize');
+        const manufacterDropDown = document.getElementById('ManufacterId');
+        const modelDropDown =  document.getElementById('ModelId');
+        const RightShoeFile1 = document.getElementById('RightShoeFile1');
+        const RightShoeFile2 = document.getElementById('RightShoeFile2');
+        const LeftShoeFile1 = document.getElementById('LeftShoeFile1');
+        const LeftShoeFile2 = document.getElementById('LeftShoeFile2')
+
+        const btnAddManufacter = document.getElementById('btnAddManufacter');
+        const txtManufacterName = document.getElementById('txtManufacterName');
+
+        const btnAddModel = document.getElementById('btnAddModel');
+        const txtModelName = document.getElementById('txtModelName');
+
+        btnAddManufacter.addEventListener('click', (e) => {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Add", "Manufacters")',
+                contentType: 'application/json',
+                dataType: "JSON",
+                data: JSON.stringify({
+                    manufacturerName: txtManufacterName.value
+                }),
+                success: (data) => {
+                    console.log(data);
+                    const option = document.createElement('option');
+                    option.value = data.manufacturerId;
+                    option.text = data.manufacturerName;
+                    option.selected = true;
+
+                    manufacterDropDown.appendChild(option);
+                    txtManufacterName.value = '';
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
+        });
+
+        manufacterDropDown.onchange = () => {
+            $.ajax({
+                type: 'GET',
+                url: `@Url.Action("GetDropDown", "Models")?manufacturerId=${manufacterDropDown.value}`,
+                success : (data) => {
+                    modelDropDown.innerHTML = '';
+
+                    for(let i = 0; i < data.length; i++) {
+                        const option = document.createElement('option');
+                        const dataElement = data[i];
+
+                        option.text = dataElement.text;
+                        option.value = dataElement.value;
+                        option.selected = dataElement.selected;
+
+                        modelDropDown.appendChild(option);
+                    }
+                },
+                error : (err) => {
+                    console.log(err);
+                }
+
+            })
+        }
+
+        btnAddModel.addEventListener('click', (e) => {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Add", "Models")',
+                contentType: 'application/json',
+                dataType: "JSON",
+                data: JSON.stringify({
+                    modelName: txtModelName.value,
+                    manufacterId: manufacterDropDown.value
+                }),
+                success: (data) => {
+                    console.log(data);
+                    const option = document.createElement('option');
+                    option.value = data.modelId;
+                    option.text = data.modelName;
+                    option.selected = true;
+
+                    modelDropDown.appendChild(option);
+                    txtModelName.value = '';
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
+        })
+    </script>
+}
