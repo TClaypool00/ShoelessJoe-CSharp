@@ -33,5 +33,25 @@ namespace ShoelessJoe.App.Models.PostModels
 
         [Display(Name = "Right Shoe 2")]
         public IFormFile RightShoeFile2 { get; set; }
+
+        public List<IFormFile> Files { get; private set; }
+
+        public void ToList()
+        {
+            AddToList(RightShoeFile1);
+            AddToList(RightShoeFile2);
+            AddToList(LeftShoeFile1);
+            AddToList(LeftShoeFile2);
+        }
+
+        private void AddToList(IFormFile file)
+        {
+            Files ??= new List<IFormFile>();
+
+            if (file is not null)
+            {
+                Files.Add(file);
+            }
+        }
     }
 }
