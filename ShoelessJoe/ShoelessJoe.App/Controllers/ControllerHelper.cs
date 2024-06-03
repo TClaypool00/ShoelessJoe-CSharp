@@ -34,5 +34,20 @@ namespace ShoelessJoe.App.Controllers
                 ViewBag.Success = TempData["Success"];
             }
         }
+
+        protected ActionResult DisplayErrors()
+        {
+            var errorList = new List<string>();
+
+            foreach (var item in ModelState)
+            {
+                foreach (var error in item.Value.Errors)
+                {
+                    errorList.Add(error.ErrorMessage);
+                }
+            }
+
+            return BadRequest(errorList);
+        }
     }
 }
