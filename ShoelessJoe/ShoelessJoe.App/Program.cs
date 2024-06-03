@@ -19,6 +19,7 @@ builder.Services.AddScoped<IManufacterService, ManufacterService>();
 builder.Services.AddScoped<IModelService, ModelService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IJWTService, JWTTokenService>();
+builder.Services.AddScoped<IShoeService, ShoeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
