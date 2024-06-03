@@ -8,6 +8,7 @@ namespace ShoelessJoe.Core.Interfaces
         #region Pubilc Properties
         public string NoManufactersFoundMessage { get; }
         public string ManufacterDeletedOKMessage {  get; }
+        public string ManufacterNameExistsMessage { get; }
         #endregion
 
         #region Public Methods

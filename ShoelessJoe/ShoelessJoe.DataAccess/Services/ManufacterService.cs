@@ -18,6 +18,9 @@ namespace ShoelessJoe.DataAccess.Services
         public string NoManufactersFoundMessage => _manufacturerAppSettings.NoManufacturersFoundMessage;
 
         public string ManufacterDeletedOKMessage => _manufacturerAppSettings.ManufacturerDeletedMessage;
+
+        //TODO: Put this string inside of a appsettigns class
+        public string ManufacterNameExistsMessage => "Manufacter by this name aleady exists";
         #endregion
 
         #region Constructors
