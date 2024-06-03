@@ -72,19 +72,25 @@ namespace ShoelessJoe.DataAccess.Services
             return Mapper.MapModel(dataModel);
         }
 
-        public async Task<List<SelectListItem>> GetModelDropDown(int userId, int? index = null)
+        public async Task<List<SelectListItem>> GetModelDropDown(int? manufacterId = null, int? index = null)
         {
             ConfigureIndex(index);
-            var dropDowns = new List<SelectListItem>();
+            var dropDowns = new List<SelectListItem>
+            {
+                AddDefaultValue()
+            };
 
-            var models = await _context.Models
-                .Where(u => u.Manufacter.UserId == userId)
+            if (manufacterId is not null)
+            {
+                var models = await _context.Models
+                .Where(u => u.ManufacterId == manufacterId)
                 .Select(m => new Model
                 {
                     ModelId = m.ModelId,
                     ModelName = m.ModelName,
                     Manufacter = new Manufacter
                     {
+                        ManufacterId = m.ManufacterId,
                         UserId = m.Manufacter.UserId
                     }
                 })
@@ -92,13 +98,12 @@ namespace ShoelessJoe.DataAccess.Services
                 .Skip(_index)
                 .ToListAsync();
 
-            dropDowns.Add(AddDefaultValue());
-
-            if (models.Count > 0)
-            {
-                for (int i = 0; i < models.Count; i++)
+                if (models.Count > 0)
                 {
-                    dropDowns.Add(Mapper.MapDropDown(models[i]));
+                    for (int i = 0; i < models.Count; i++)
+                    {
+                        dropDowns.Add(Mapper.MapDropDown(models[i]));
+                    }
                 }
             }
 

@@ -12,7 +12,7 @@ namespace ShoelessJoe.Core.Interfaces
         #region Public Methods
         public Task<List<CoreModel>> GetModelsAsync(int? userId = null, int? index = null);
 
-        public Task<List<SelectListItem>> GetModelDropDown(int userId, int? index = null);
+        public Task<List<SelectListItem>> GetModelDropDown(int? manufacterId = null, int? index = null);
 
         public Task<CoreModel> GetModelAsync(int id);
 
