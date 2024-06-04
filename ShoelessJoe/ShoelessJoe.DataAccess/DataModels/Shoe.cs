@@ -21,6 +21,9 @@ namespace ShoelessJoe.DataAccess.DataModels
         public int ModelId { get; set; }
         public Model Model { get; set; }
 
+        [NotMapped]
+        public ShoeImage ShoeImage { get; set; }
+
         public List<ShoeImage> ShoeImages { get; set; }
         public List<PotentialBuy> PotentialBuys { get; set; }
     }

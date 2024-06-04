@@ -25,6 +25,7 @@ namespace ShoelessJoe.App.Models.PostModels
 
         [Display(Name = "Left Shoe 1")]
         public IFormFile LeftShoeFile1 { get; set; }
+        public string LeftShoeFilePath1 { get; set; }
         [Display(Name = "Left Shoe 2")]
         public IFormFile LeftShoeFile2 { get; set; }
 

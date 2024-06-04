@@ -35,6 +35,21 @@ namespace ShoelessJoe.Core.CoreModels
             }
         }
 
+        public string FilePath
+        {
+            get
+            {
+                if (_shoeArray is not null && _shoeArray.Length > 0)
+                {
+                    return $"data:image/jpg;base64,{Convert.ToBase64String(_shoeArray)}";
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
         public byte[] ShoeArray
         {
             get

@@ -22,7 +22,7 @@ namespace ShoelessJoe.Core.Interfaces
         #region Public Methods
         public Task<List<CoreShoe>> GetShoesAsync(int? ownerId = null, int? soldToId = null, DateTime? datePosted = null, bool? isSold = null, int? index = null);
 
-        public Task<CoreShoe> GetShoesAsync(int id);
+        public Task<CoreShoe> GetShoeAsync(int id, int userId);
 
         public Task<CoreShoe> AddShoeAsync(CoreShoe shoe);
 

@@ -12,9 +12,6 @@ namespace ShoelessJoe.DataAccess.Services
     public class ShoeService : ServiceHelper, IShoeService
     {
         #region Private Fields
-        private string _filePath;
-        private string _picturePath;
-        private FileStream _stream;
         private readonly ShoeAppSettings _shoeAppSettings;
         #endregion
 
@@ -111,7 +108,8 @@ namespace ShoelessJoe.DataAccess.Services
                                 LastName = s.Model.Manufacter.User.LastName
                             }
                         }
-                    }
+                    },
+                    ShoeImage = s.ShoeImages.FirstOrDefault()
                 })
                 .Take(15)
                 .OrderBy(x => x.DatePosted)
@@ -151,11 +149,40 @@ namespace ShoelessJoe.DataAccess.Services
             return coreShoes;
         }
 
-        public async Task<CoreShoe> GetShoesAsync(int id)
+        public async Task<CoreShoe> GetShoeAsync(int id, int userId)
         {
             var dataShoe = await _context.Shoes
                 .Select(FindDataShoe())
                 .FirstOrDefaultAsync(s => s.ShoeId == id);
+
+            dataShoe.ShoeImages = await _context.ShoeImages
+                .Where(a => a.ShoeId == id)
+                .Select(b => new ShoeImage
+                {
+                    ShoeImageId = b.ShoeImageId,
+                    FileName = b.FileName,
+                    ShoeArray = b.ShoeArray
+                })
+                .ToListAsync();
+
+            if (await ShoeIsOwnedByUserAsync(id, userId))
+            {
+                dataShoe.PotentialBuys = await _context.PotentialBuys
+                    .Where(b => b.ShoeId == id)
+                    .Take(5)
+                    .Select(a => new PotentialBuy
+                    {
+                        PotentialBuyId = a.PotentialBuyId,
+                        IsSold = a.IsSold,
+                        PotentialBuyer = new User
+                        {
+                            UserId = a.PotentialBuyer.UserId,
+                            FirstName = a.PotentialBuyer.FirstName,
+                            LastName = a.PotentialBuyer.LastName
+                        }
+                    })
+                    .ToListAsync();
+            }
 
             return Mapper.MapShoe(dataShoe);
         }
@@ -211,7 +238,8 @@ namespace ShoelessJoe.DataAccess.Services
                             LastName = a.Model.Manufacter.User.LastName
                         }
                     }
-                }
+                },
+                ShoeImage = a.ShoeImages.FirstOrDefault()
             };
         }
 

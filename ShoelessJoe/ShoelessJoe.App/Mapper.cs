@@ -29,6 +29,16 @@ namespace ShoelessJoe.App
             };
         }
 
+        public static PotentialBuyViewModel MapPotentialBuy(CorePotentialBuy potentialBuy)
+        {
+            return new PotentialBuyViewModel
+            {
+                PotentialBuyId = potentialBuy.PotentialBuyId,
+                UserDisplayName = potentialBuy.PotentialBuyer.DisplayName,
+                UserId = potentialBuy.PotentialBuyer.UserId
+            };
+        }
+
         public static CoreShoe MapShoe(PostShoeViewModel shoe)
         {
             return new CoreShoe(shoe.Files)
@@ -45,6 +55,57 @@ namespace ShoelessJoe.App
                     }
                 }
             };
+        }
+
+        public static ShoeViewModel MapShoe(CoreShoe shoe)
+        {
+            var shoeModel = new ShoeViewModel
+            {
+                ShoeId = shoe.ShoeId,
+                ManufacterId = shoe.Model.Manufacter.ManufacterId,
+                ManufacterName = shoe.Model.Manufacter.ManufacterName,
+                ModelId = shoe.Model.ModelId,
+                ModelName = shoe.Model.ModelName,
+                LeftSize = shoe.LeftSize,
+                RightSize = shoe.RightSize,
+                OwnerId = shoe.Model.Manufacter.User.UserId,
+                OwnerDisplayName = shoe.Model.Manufacter.User.DisplayName,
+            };
+
+            if (shoe.ShoeImages is not null && shoe.ShoeImages.Count > 0)
+            {
+                for (int i = 0; i < shoe.ShoeImages.Count; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            shoeModel.LeftShoeFile1 = shoe.ShoeImages[i].File;
+                            shoeModel.LeftShoeFilePath1 = shoe.ShoeImages[i].FilePath;
+                            break;
+                        case 1:
+                            shoeModel.LeftShoeFile2 = shoe.ShoeImages[i].File;
+                            break;
+                        case 2:
+                            shoeModel.RightShoeFile1 = shoe.ShoeImages[i].File;
+                            break;
+                        case 3:
+                            shoeModel.RightShoeFile2 = shoe.ShoeImages[i].File;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (shoe.PotentialBuys is not null && shoe.PotentialBuys.Count > 0)
+            {
+                for (int i = 0; i < shoe.PotentialBuys.Count; i++)
+                {
+                    shoeModel.PotentialBuys.Add(Mapper.MapPotentialBuy(shoe.PotentialBuys[i]));
+                }
+            }
+
+            return shoeModel;
         }
 
         public static CoreUser MapUser(UserViewModel user)

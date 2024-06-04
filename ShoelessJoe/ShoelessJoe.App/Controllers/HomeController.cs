@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoelessJoe.App.Models;
 using System.Diagnostics;
+using ShoelessJoe.Core.Interfaces;
 
 namespace ShoelessJoe.App.Controllers
 {
@@ -11,18 +12,33 @@ namespace ShoelessJoe.App.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IShoeService _shoeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IShoeService shoeService)
         {
             _logger = logger;
+            _shoeService = shoeService;
         }
 
-        public IActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+            var coreShoes = await _shoeService.GetShoesAsync();
+            var shoeModels = new List<ShoeViewModel>();
+
+            if (coreShoes.Count > 0)
+            {
+                for (int i = 0; i < coreShoes.Count; i++)
+                {
+                    shoeModels.Add(Mapper.MapShoe(coreShoes[i]));
+                }
+            }
+
+            return View(shoeModels);
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Privacy()
         {
             return View();
         }

@@ -201,6 +201,24 @@ namespace ShoelessJoe.DataAccess
                 coreShoe.Model = MapModel(shoe.Model);
             }
 
+            if (shoe.PotentialBuys is not null && shoe.PotentialBuys.Count > 0)
+            {
+                coreShoe.PotentialBuys = new List<CorePotentialBuy>();
+
+                for (int i = 0; i < shoe.PotentialBuys.Count; i++)
+                {
+                    coreShoe.PotentialBuys.Add(MapPotentialBuy(shoe.PotentialBuys[i]));
+                }
+            }
+
+            if (shoe.ShoeImage is not null)
+            {
+                coreShoe.ShoeImages = new List<CoreShoeImage>
+                {
+                    MapShoeImage(shoe.ShoeImage)
+                };
+            }
+
             return coreShoe;
         }
 
@@ -271,13 +289,10 @@ namespace ShoelessJoe.DataAccess
 
         public static CoreShoeImage MapShoeImage(ShoeImage shoeImage)
         {
-            return new CoreShoeImage
+            return new CoreShoeImage(shoeImage.ShoeArray, shoeImage.FileName)
             {
                 ShoeImageId = shoeImage.ShoeImageId,
-                //LeftShoeImage1Path = shoeImage.LeftShoeImage1,
-                //LeftShoeImage2Path = shoeImage.LeftShoeImage2,
-                //RightShoeImage1Path = shoeImage.RightShoeImage1,
-                //RightShoeImage2Path= shoeImage.RightShoeImage2
+                //Shoe = MapShoe(shoeImage.Shoe)
             };
         }
 
@@ -285,10 +300,10 @@ namespace ShoelessJoe.DataAccess
         {
             var dataShoeImage = new ShoeImage
             {
-                //LeftShoeImage1 = shoeImage.LeftShoeImage1Path,
-                //LeftShoeImage2 = shoeImage.LeftShoeImage2Path,
-                //RightShoeImage1 = shoeImage.RightShoeImage1Path,
-                //RightShoeImage2 = shoeImage.RightShoeImage2Path
+                ShoeImageId = shoeImage.ShoeImageId,
+                ShoeId = shoeImage.Shoe.ShoeId,
+                ShoeArray = shoeImage.ShoeArray,
+                FileName = shoeImage.FileName,
             };
 
             if (shoeImage.ShoeImageId != 0)
