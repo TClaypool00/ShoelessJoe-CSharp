@@ -24,3 +24,15 @@ body {
 .form-group {
     margin-bottom: 4%;
 }
+
+.shoeContainer {
+    width: 25%;
+}
+
+.shoeContainer img {
+    width: 100%;
+}
+
+.shoeContainer a {
+    text-decoration: none;
+}
