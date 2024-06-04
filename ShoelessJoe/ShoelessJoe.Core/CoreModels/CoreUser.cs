@@ -8,6 +8,14 @@
 
         public string LastName { get; set; }
 
+        public string DisplayName
+        {
+            get
+            {
+                return $"{FirstName} {LastName[0]}.";
+            }
+        }
+
         public string Email { get; set; }
 
         public string Password { get; set; }
