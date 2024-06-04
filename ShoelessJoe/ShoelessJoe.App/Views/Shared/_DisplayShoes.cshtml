@@ -1,0 +1,19 @@
+﻿@model List<ShoelessJoe.App.Models.ShoeViewModel>
+
+<div class="row">
+    <div class="col-md-6">
+        @foreach (var item in Model)
+        {
+            <div class="shoeContainer">
+                <a asp-action="View" asp-controller="Shoes" asp-route-id="@item.ShoeId">
+                    <img src="@item.LeftShoeFilePath1" />
+                    <p>
+                        Manufacter: @item.ManufacterName
+                        <br />
+                        Model: @item.ModelName
+                    </p>
+                </a>
+            </div>
+        }
+    </div>
+</div>

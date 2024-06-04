@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ShoelessJoe.App.Models;
 using ShoelessJoe.App.Models.PostModels;
 using ShoelessJoe.Core.Interfaces;
 
@@ -36,6 +37,33 @@ namespace ShoelessJoe.App.Controllers
             _modelDropDown = model.ModelDropDown;
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> View(int id)
+        {
+            var coreShoe = await _shoeService.GetShoeAsync(id, UserId);
+
+            var shoeModel = Mapper.MapShoe(coreShoe);
+
+            return View(shoeModel);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> MyShoes()
+        {
+            var coreShoes = await _shoeService.GetShoesAsync(UserId);
+            var shoeModels = new List<ShoeViewModel>();
+
+            if (coreShoes.Count > 0)
+            {
+                for (int i = 0; i < coreShoes.Count; i++)
+                {
+                    shoeModels.Add(Mapper.MapShoe(coreShoes[i]));
+                }
+            }
+
+            return View(shoeModels);
         }
 
         [HttpPost]
